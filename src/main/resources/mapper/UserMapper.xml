@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.daqiang.blog.infra.mapper.UserMapper">
+
+    <resultMap id="userBaseResultMap" type="dev.daqiang.blog.domain.entity.User"
+               extends="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityResultMap">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+    </resultMap>
+
+    <resultMap id="userInfoResultMap" type="dev.daqiang.blog.domain.entity.User" extends="userBaseResultMap">
+        <association property="userInfo" column="id" javaType="dev.daqiang.blog.domain.entity.UserInfo"
+                     select="dev.daqiang.blog.infra.mapper.UserInfoMapper.selectUserInfoById" />
+    </resultMap>
+
+    <sql id="userColumns">
+        username,
+        password,
+    </sql>
+
+    <select id="getUsers" resultMap="userBaseResultMap">
+        select
+            <include refid="userColumns" />
+        <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
+            <property name="alias" value="u"/>
+        </include>
+        from blog_sys_user u
+    </select>
+    <select id="selectUserInfoById" resultMap="userInfoResultMap">
+        SELECT * FROM blog_sys_user
+        WHERE id=#{id}
+    </select>
+    <delete id="deleteUserById" parameterType="Integer">
+        delete from blog_sys_user where id=#{id}
+    </delete>
+    <insert id="insertUser" parameterType="dev.daqiang.blog.domain.entity.User">
+        insert into blog_sys_user(id,username,age)values(#{id},#{username},#{age})
+    </insert>
+    <update id="updateUser" parameterType="dev.daqiang.blog.domain.entity.User">
+
+    </update>
+</mapper>

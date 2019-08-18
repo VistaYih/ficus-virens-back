@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${K8S_MASTER:localhost}:${K8S_MYSQL_PORT:3306}/blog_project?characterEncoding=utf8&useSSL=false
+    username: blog
+    password: project
+  liquibase:
+    enabled: true
+    change-log: classpath:database/changelog/master.xml
+
+
+mybatis:
+  check-config-location: false
+  type-aliases-package: dev.daqiang.blog.domain.entity # 无效
+  configuration:
+    database-id: mysql
+  mapper-locations: classpath:mapper/*.xml

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.daqiang.blog.infra.mapper.PermissionMapper">
+
+    <resultMap id="permissionResultMap" type="dev.daqiang.blog.domain.entity.Permission"
+               extends="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityResultMap">
+        <id property="id" column="id" />
+        <result property="permissionName" column="permission_name" />
+    </resultMap>
+
+    <sql id="permissionColumns">
+        ${alias}.id,
+        ${alias}.permission_name,
+    </sql>
+    <insert id="insertPermission" >
+        INSERT INTO blog_sys_permission (permission_name)
+        VALUE (#{permission})
+    </insert>
+    <update id="updatePermission">
+        UPDATE blog_sys_permission p set permission_name=#{permission}
+        WHERE p.id = 1
+    </update>
+    <delete id="deletePermission">
+        DELETE FROM
+            blog_sys_permission p
+        WHERE
+            p.permission_name = #{permission}
+    </delete>
+
+    <select id="selectAllPermission" resultMap="permissionResultMap" >
+        SELECT
+            <include refid="permissionColumns">
+                <property name="alias" value="p"/>
+            </include>
+            <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
+                <property name="alias" value="p"/>
+            </include>
+        FROM blog_sys_permission p
+    </select>
+
+    <select id="selectPermissionByRoleName" resultType="dev.daqiang.blog.domain.entity.Permission">
+        SELECT
+        <include refid="permissionColumns">
+            <property name="alias" value="p"/>
+        </include>
+        <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
+            <property name="alias" value="p"/>
+        </include>
+        FROM
+            blog_sys_permission p
+        LEFT JOIN blog_sys_role_permission rp on rp.permission_id = p.id
+        LEFT JOIN blo_sys_role r on r.id = rp.role_id
+        WHERE
+            blo_sys_role.role_name = #{roleName}
+    </select>
+
+
+</mapper>

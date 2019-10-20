@@ -1,6 +1,6 @@
 package dev.daqiang.blog.infra.config;
 
-import dev.daqiang.blog.infra.common.constant.EnumDBType;
+import dev.daqiang.blog.common.constant.DatabaseTypeEnum;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -35,7 +35,7 @@ public class DataSourceConfig {
         DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
 
         Properties properties = new Properties();
-        for (EnumDBType dbType: EnumDBType.values()) {
+        for (DatabaseTypeEnum dbType: DatabaseTypeEnum.values()) {
             properties.setProperty(dbType.getType(), dbType.getAlias());
         }
         databaseIdProvider.setProperties(properties);

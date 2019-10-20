@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${K8S_MASTER:localhost}:${K8S_MYSQL_PORT:3306}/blog_project?characterEncoding=utf8&useSSL=false
-    username: blog
-    password: project
+    url: jdbc:mysql://${K8S_MASTER:localhost}:${K8S_MYSQL_PORT:30306}/blog_project?characterEncoding=utf8&useSSL=false
+    username: root
+    password: yishuida
   liquibase:
     enabled: true
     change-log: classpath:database/changelog/master.xml

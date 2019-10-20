@@ -1,6 +1,6 @@
-package dev.daqiang.blog.infra.common.constant;
+package dev.daqiang.blog.common.constant;
 
-public enum EnumDBType {
+public enum DatabaseTypeEnum {
     MYSQL("MySQL","mysql"),
     POSTPRESQL("PostgreSQL", "postgresql"),
     ORACLE("Oracle", "oracle"),
@@ -11,7 +11,7 @@ public enum EnumDBType {
 
     private final String alias;
 
-    EnumDBType(String type, String alias) {
+    DatabaseTypeEnum(String type, String alias) {
         this.type = type;
         this.alias = alias;
     }

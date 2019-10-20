@@ -11,4 +11,12 @@ public class Post extends BaseEntity {
     private String postName;
 
     private String context;
+
+    private String title;
+
+    private String backgroundImage;
+
+    private String content;
+
+
 }

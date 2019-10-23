@@ -32,7 +32,7 @@ public class UserServiceImplTest {
     @Test
     public void findUserInfoById() {
         User user = userService.findUserInfoById(100001L);
-        System.out.println(user.getUserInfo());
+        System.out.println(user.getUsername());
         assertEquals(user.getUsername(), "admin");
     }
     @Test

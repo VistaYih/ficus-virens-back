@@ -7,37 +7,202 @@
         <id property="id" column="id" />
         <result property="username" column="username" />
         <result property="password" column="password" />
+
     </resultMap>
 
-    <resultMap id="userInfoResultMap" type="dev.daqiang.blog.domain.entity.User" extends="userBaseResultMap">
-        <association property="userInfo" column="id" javaType="dev.daqiang.blog.domain.entity.UserInfo"
-                     select="dev.daqiang.blog.infra.mapper.UserInfoMapper.selectUserInfoById" />
+    <resultMap id="userResultMap" type="dev.daqiang.blog.domain.entity.User" extends="userBaseResultMap">
+        <collection property="roles" ofType="dev.daqiang.blog.domain.entity.Role" fetchType="lazy" column="{userId=id}"
+                    select="dev.daqiang.blog.infra.mapper.RoleMapper.selectByUserId" javaType="ArrayList">
+        </collection>
     </resultMap>
+
+    <resultMap id="userInfoResultMap" type="dev.daqiang.blog.domain.entity.UserInfo"
+               extends="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityResultMap">
+        <id property="id" column="id" />
+        <result property="firstName" column="first_name" />
+        <result property="lastName" column="last_name" />
+    </resultMap>
+
 
     <sql id="userColumns">
-        username,
-        password,
+        ${alias}.id,
+        ${alias}.username,
+        ${alias}.password,
     </sql>
 
-    <select id="getUsers" resultMap="userBaseResultMap">
-        select
-            <include refid="userColumns" />
+    <sql id="userInfoColumn">
+        ${alias}.id,
+        ${alias}.first_name,
+        ${alias}.last_name,
+    </sql>
+
+    <select id="selectAll" resultMap="userBaseResultMap">
+        SELECT
+        <include refid="userColumns" >
+            <property name="alias" value="u"/>
+        </include>
         <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
             <property name="alias" value="u"/>
         </include>
-        from blog_sys_user u
+        FROM blog_sys_user u
     </select>
-    <select id="selectUserInfoById" resultMap="userInfoResultMap">
-        SELECT * FROM blog_sys_user
+
+    <select id="selectById" resultMap="userResultMap">
+        SELECT
+        <include refid="userColumns" >
+            <property name="alias" value="u"/>
+        </include>
+        <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
+            <property name="alias" value="u"/>
+        </include>
+        FROM blog_sys_user u
         WHERE id=#{id}
     </select>
-    <delete id="deleteUserById" parameterType="Integer">
-        delete from blog_sys_user where id=#{id}
-    </delete>
-    <insert id="insertUser" parameterType="dev.daqiang.blog.domain.entity.User">
-        insert into blog_sys_user(id,username,age)values(#{id},#{username},#{age})
-    </insert>
-    <update id="updateUser" parameterType="dev.daqiang.blog.domain.entity.User">
 
+    <select id="selectByUsername" resultMap="userBaseResultMap">
+        SELECT
+        <include refid="userColumns" >
+            <property name="alias" value="u"/>
+        </include>
+        <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns" >
+            <property name="alias" value="u"/>
+        </include>
+        FROM blog_sys_user u
+        WHERE username=#{username}
+    </select>
+
+    <select id="selectUserInfoById" resultMap="userInfoResultMap">
+        SELECT
+        <include refid="userInfoColumn">
+            <property name="alias" value="ui"/>
+        </include>
+        <include refid="dev.daqiang.blog.infra.mapper.BaseEntityMapper.baseEntityColumns">
+            <property name="alias" value="ui"/>
+        </include>
+        FROM blog_sys_user_info ui
+        WHERE ui.id=#{userId}
+    </select>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM blog_sys_user WHERE id=#{id}
+    </delete>
+    <delete id="deleteRoles">
+        DELETE FROM blog_sys_user_role WHERE user_id = #{userId}
+    </delete>
+    <delete id="deleteRole">
+        DELETE FROM blog_sys_user_role WHERE user_id = #{userId} and role_id=#{roleId}
+    </delete>
+
+    <insert id="insert" parameterType="dev.daqiang.blog.domain.entity.User">
+        INSERT INTO blog_sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">
+                username,
+            </if>
+            <if test="password != null and password != ''">
+                password,
+            </if>
+            <if test="createBy != null and createBy !=''">
+                create_by,
+            </if>
+            <if test="createTime != null and createTime !=''">
+                create_time,
+            </if>
+            <if test="lastUpdateBy != null and lastUpdateBy !=''">
+                last_update_by,
+            </if>
+            <if test="lastUpdateTime != null and lastUpdateTime !=''">
+                last_update_time,
+            </if>
+            <if test="objectVersionNumber != null and objectVersionNumber !=''">
+                object_version_number
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">
+                #{username},
+            </if>
+            <if test="password != null and password != ''">
+                #{password},
+            </if>
+            <if test="createBy != null and createBy !=''">
+                #{createBy},
+            </if>
+            <if test="createTime != null and createTime !=''">
+                #{createTime},
+            </if>
+            <if test="lastUpdateBy != null and lastUpdateBy !=''">
+                #{lastUpdateBy},
+            </if>
+            <if test="lastUpdateTime != null and lastUpdateTime !=''">
+                #{lastUpdateTime},
+            </if>
+            <if test="objectVersionNumber != null and objectVersionNumber !=''">
+                #{objectVersionNumber}
+            </if>
+        </trim>
+    </insert>
+    <insert id="addRole">
+        INSERT INTO blog_sys_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">
+                userId,
+            </if>
+            <if test="roleId != null and roleId != ''">
+                role_id,
+            </if>
+            <if test="createBy != null and createBy !=''">
+                create_by,
+            </if>
+            <if test="createTime != null and createTime !=''">
+                create_time,
+            </if>
+            <if test="lastUpdateBy != null and lastUpdateBy !=''">
+                last_update_by,
+            </if>
+            <if test="lastUpdateTime != null and lastUpdateTime !=''">
+                last_update_time,
+            </if>
+            <if test="objectVersionNumber != null and objectVersionNumber !=''">
+                object_version_number
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="roleId != null and roleId != ''">
+                #{roleId},
+            </if>
+            <if test="createBy != null and createBy !=''">
+                #{createBy},
+            </if>
+            <if test="createTime != null and createTime !=''">
+                #{createTime},
+            </if>
+            <if test="lastUpdateBy != null and lastUpdateBy !=''">
+                #{lastUpdateBy},
+            </if>
+            <if test="lastUpdateTime != null and lastUpdateTime !=''">
+                #{lastUpdateTime},
+            </if>
+            <if test="objectVersionNumber != null and objectVersionNumber !=''">
+                #{objectVersionNumber}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="dev.daqiang.blog.domain.entity.User">
+        UPDATE blog_sys_user
+        <set>
+            <if test="username != null">username=#{username},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="lastUpdateBy != null">last_update_by=#{lastUpdateBy},</if>
+            <if test="lastUpdateTime != null">last_update_time=#{lastUpdateTime},</if>
+            <if test="objectVersionNumber != null">object_version_number=#{objectVersionNumber}</if>
+        </set>
+        WHERE id=#{id}
     </update>
 </mapper>

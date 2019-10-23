@@ -2,13 +2,15 @@ package dev.daqiang.blog.domain.entity;
 
 
 import lombok.Data;
-import org.apache.ibatis.type.Alias;
 
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Vista Yih
+ * @version 0.1.0
+ */
 @Data
-@Alias("User")
 public class User extends BaseEntity {
 
     private Long id;
@@ -19,8 +21,12 @@ public class User extends BaseEntity {
 
     private List<Role> roles;
 
-    private UserInfo userInfo;
+    // private UserInfo userInfo;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) {

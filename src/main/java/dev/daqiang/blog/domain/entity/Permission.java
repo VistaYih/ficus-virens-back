@@ -7,9 +7,13 @@ import java.util.Objects;
 @Data
 public class Permission extends BaseEntity {
 
-    private Integer id;
+    private Long id;
 
     private String permissionName;
+
+    public Permission(String permissionName) {
+        this.permissionName = permissionName;
+    }
 
     @Override
     public boolean equals(Object o) {

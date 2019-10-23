@@ -14,6 +14,9 @@ public class Role extends BaseEntity {
 
     private List<Permission> permissions;
 
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 
     @Override
     public boolean equals(Object o) {
